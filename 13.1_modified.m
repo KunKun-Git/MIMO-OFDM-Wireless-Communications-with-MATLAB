@@ -37,6 +37,7 @@ qpskmod = comm.QPSKModulator('BitInput',true);
 AWGN = comm.AWGNChannel; % 高斯白噪声模块
 qpskdemod = comm.QPSKDemodulator('BitOutput',true);
 
+BER = [];
 for SNRdB = SNRdBs
     N_errorbits = 0;
     sigmaNoise = sqrt(NT*0.5*10^(-SNRdB/10));
@@ -71,19 +72,17 @@ for SNRdB = SNRdBs
         symbol_hat = reshape(symbol_hat,NT*N_frame,1);
         bit_hat = qpskdemod(symbol_hat);
         N_errorbits = N_errorbits+sum(msg_bit~=bit_hat);
-        
-
-
-
-
 
 
     end
-    
-
+    BER(end+1) = N_errorbits/N_tbits; 
 
 end
-
+semilogy(SNRdBs, BER, '-o');
+grid on;
+ylim([1e-4, 1])
+xlabel("SNR/dB")
+ylabel("BER")
 %%
 %信道容量估算
 
