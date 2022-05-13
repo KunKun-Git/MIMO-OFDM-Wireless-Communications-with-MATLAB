@@ -19,8 +19,9 @@ actualB = B./alpha;
 gamma = 3.8;        %衰减指数
 sigmaShadow = 10^(8/10);
 sigmaNoise = 0;
-rc = 1600;          %总大小
+rc = 160;          %总大小
 rh = rc/16;           %核心区
+rrelative = 2;
 
 N_frame=3;     % Number of frames/packet（链路层） 
 N_packet=10;   % Number of packets（网络层）；即仿真次数
@@ -30,10 +31,10 @@ N_user=K;
 % N_act_user=4; 
 
 
-Mset = 2.^(1:10);
+Mset = 2.^(1:18);
 
 %改成六边形，3层
-cellCenters = [[-50*rc, 50*rc];[0, 50*rc];[50*rc, 50*rc];[-50*rc, 0];[0, 0];[50*rc, 0];[-50*rc, -50*rc];[0, -50*rc];[50*rc, -50*rc]];
+cellCenters = [[-rrelative*rc, rrelative*rc];[0, rrelative*rc];[rrelative*rc, rrelative*rc];[-rrelative*rc, 0];[0, 0];[rrelative*rc, 0];[-rrelative*rc, -rrelative*rc];[0, -rrelative*rc];[rrelative*rc, -rrelative*rc]];
 Ncells = length(cellCenters);
 scatter(cellCenters(:, 1), cellCenters(:, 2))
 title("小区中心点分布")
@@ -50,6 +51,8 @@ AWGN = comm.AWGNChannel; % 高斯白噪声模块
 qpskdemod = comm.QPSKDemodulator('BitOutput',true);
 
 BER = [];
+yset = [];  %式12仿真
+rightset = [];  %式12仿真
 SNRdB = 10;
 
 for M = Mset
@@ -59,7 +62,7 @@ for M = Mset
 
     N_errorbits = 0;
 %     sigmaNoise = sqrt(NT*0.5*10^(-SNRdB/10));
-    sigmaNoise = 0;
+    sigmaNoise = 1e-6;
 
 %     rng(0);
 
@@ -119,6 +122,9 @@ for M = Mset
 
         N_errorbits = N_errorbits + sum(abs(bits-msg_bit));
         
+        %以y11为例
+        
+
 
 
         
@@ -138,17 +144,36 @@ for M = Mset
 
     end
     BER(end+1) = N_errorbits/N_tbits; 
+    yset = [yset y(1, 1)/M/sqrt(SNRdB*SNRdB)];
+    rightset = [rightset sum(squeeze(beta(1, 1, :)).*squeeze(symbol(1, :)).')];
 
 end
 
 %%
 % 画图
-
+figure(1)
 loglog(Mset, BER, '-o');
 grid on;
-ylim([1e-4, 1])
 xlabel("天线数M")
 ylabel("BER")
+
+figure(2)
+loglog((Mset)', sqrt(abs(yset))', '-o');          %为甚麽需要开个根号？？？
+hold on;
+loglog((Mset)', abs(rightset)', '-o');
+grid on;
+xlabel("天线数M")
+ylabel("所得符号")
+hold off;
+
+figure(3)
+temp = abs(abs(rightset)'-sqrt(abs(yset))');
+loglog((Mset)', temp, '-o');
+
+
+grid on;
+xlabel("天线数M")
+ylabel("误差")
 %%
 %信道容量估算
 

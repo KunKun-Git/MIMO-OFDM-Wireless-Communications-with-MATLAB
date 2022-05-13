@@ -84,3 +84,18 @@ end
 
 
 - OFDM调制待完成
+- 仿真随着天线数量的增加，噪声消除、误码率变化等情况
+
+<img src="C:\Users\71744\AppData\Roaming\Typora\typora-user-images\image-20220513105500710.png" alt="image-20220513105500710" style="zoom:50%;" />
+
+- 噪声方差较大时，噪声主导。
+
+<img src="C:\Users\71744\AppData\Roaming\Typora\typora-user-images\image-20220513105116838.png" alt="image-20220513105116838" style="zoom:50%;" />
+
+- 噪声方差减小，小区间距减小
+
+<img src="C:\Users\71744\AppData\Roaming\Typora\typora-user-images\image-20220513111503435.png" alt="image-20220513111503435" style="zoom:50%;" />
+
+<img src="C:\Users\71744\AppData\Roaming\Typora\typora-user-images\image-20220513111433631.png" alt="image-20220513111433631" style="zoom: 50%;" />
+
+- 为甚麽需要开个根号？
