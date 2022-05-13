@@ -77,6 +77,10 @@ for j =1:Ncells
 end
 ```
 
+- 用户撒点效果
+
+<img src="C:\Users\71744\AppData\Roaming\Typora\typora-user-images\image-20220512221512161.png" alt="image-20220512221512161" style="zoom:67%;" />
+
 
 
 - OFDM调制待完成
