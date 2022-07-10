@@ -98,4 +98,53 @@ end
 
 <img src="C:\Users\71744\AppData\Roaming\Typora\typora-user-images\image-20220513111433631.png" alt="image-20220513111433631" style="zoom: 50%;" />
 
-- 为甚麽需要开个根号？
+- 为甚麽需要开个根号？yset
+
+![image-20220710180215347](D:\data\typoraImages\image-20220710180215347.png)
+
+
+
+- 用户数增加
+
+![image-20220710181332360](D:\data\typoraImages\image-20220710181332360.png)
+
+
+
+- 如何合理消除用户间的干扰，把符号解调出来？
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

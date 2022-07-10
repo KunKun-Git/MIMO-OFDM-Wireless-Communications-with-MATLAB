@@ -19,33 +19,26 @@ actualB = B./alpha;
 gamma = 3.8;        %衰减指数
 sigmaShadow = 10^(8/10);
 sigmaNoise = 0;
-rc = 16;          %总大小
+rc = 160;          %总大小
 rh = rc/16;           %核心区
 rrelative = 2;
 
 N_frame=3;     % Number of frames/packet（链路层） 
-N_packet=300;   % Number of packets（网络层）；即仿真次数
+N_packet=10;   % Number of packets（网络层）；即仿真次数
 b=2;            % Number of bits per QPSK symbol
 NT=1;  
 N_user=K;  
 % N_act_user=4; 
 
 
-Mset = 2.^(1:10);
-Mset = floor(Mset);
+Mset = 2.^(1:18);
 
 %改成六边形，3层
-Ncells = 19;
-
-figure;
-cellCenters = generateCells(Ncells, rc);         %第一个参数为小区个数
-cellCenters = [cellCenters(:,2), cellCenters(:,1)];
-% cellCenters = [[-rrelative*rc, rrelative*rc];[0, rrelative*rc];[rrelative*rc, rrelative*rc];[-rrelative*rc, 0];[0, 0];[rrelative*rc, 0];[-rrelative*rc, -rrelative*rc];[0, -rrelative*rc];[rrelative*rc, -rrelative*rc]];
-% Ncells = length(cellCenters);
-
-
-% scatter(cellCenters(:, 1), cellCenters(:, 2))
+cellCenters = [[-rrelative*rc, rrelative*rc];[0, rrelative*rc];[rrelative*rc, rrelative*rc];[-rrelative*rc, 0];[0, 0];[rrelative*rc, 0];[-rrelative*rc, -rrelative*rc];[0, -rrelative*rc];[rrelative*rc, -rrelative*rc]];
+Ncells = length(cellCenters);
+scatter(cellCenters(:, 1), cellCenters(:, 2))
 title("小区中心点分布")
+
 
 N_pbits = Ncells*K*2; % Number of bits in a packet
 N_tbits = N_pbits*N_packet; % Number of total bits
@@ -76,16 +69,15 @@ for j =1:Ncells
         end
         userpoints(j, user, :) = squeeze(userpoints(j, user, :)) +  squeeze(cellCenters(j, :))';
         for l = 1:Ncells
-%            beta(l, user, j) = lognrnd(0, sigmaShadow)/norm(squeeze(userpoints(j, user, :))-squeeze(cellCenters(l, :)))^gamma;
-           beta(l, user, j) = 1/norm(squeeze(userpoints(j, user, :))'-squeeze(cellCenters(l, :)))^gamma;
+           beta(l, user, j) = lognrnd(0, sigmaShadow)/norm(squeeze(userpoints(j, user, :))-squeeze(cellCenters(l, :)))^gamma;
+%            beta(l, user, j) = 1/norm(squeeze(userpoints(j, user, :))'-squeeze(cellCenters(l, :)))^gamma;
         end
     end
-    scatter(userpoints(j, :, 1), userpoints(j, :, 2), 'filled');
+    scatter(userpoints(j, :, 1), userpoints(j, :, 2)s);
     
     hold on;
 
 end
-
 hold off;
 
 %% 
@@ -97,7 +89,7 @@ for M = Mset
 
     N_errorbits = 0;
 %     sigmaNoise = sqrt(NT*0.5*10^(-SNRdB/10));
-    sigmaNoise = 1e-6/SNR;      %根据Ghat调整常数值
+    sigmaNoise = 1e-6;
 
 %     rng(0);
 
@@ -164,29 +156,28 @@ for M = Mset
 
     end
     BER(end+1) = N_errorbits/N_tbits; 
-    yset = [yset y(1, 1)/M/sqrt(SNR*SNR)];
+    yset = [yset y(1, 1)/M/sqrt(SNRdB*SNRdB)];
     rightset = [rightset sum(squeeze(beta(1, 1, :)).*squeeze(symbol(1, :)).')];
 
 end
 
 %% 画图
-figure;
+figure(1)
 loglog(Mset, BER, '-o');
 grid on;
 xlabel("天线数M")
 ylabel("BER")
 
-figure;
+figure(2)
 loglog((Mset)', sqrt(abs(yset))', '-o');          %为甚麽需要开个根号？？？
 hold on;
 loglog((Mset)', abs(rightset)', '-o');
 grid on;
 xlabel("天线数M")
 ylabel("所得符号")
-legend("接收到的符号", "理想无噪情况");
 hold off;
 
-figure;
+figure(3)
 temp = abs(abs(rightset)'-sqrt(abs(yset))');
 loglog((Mset)', temp, '-o');
 
